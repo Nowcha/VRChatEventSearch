@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  source      String   // "vrceve" or "x"
+  externalId  String?  // ID from source (e.g., WordPress post ID or Tweet ID)
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  url         String?  // Link to source
+  imageUrl    String?
+  tags        String?  // JSON string of tags or comma-separated
+  location    String?  // "Group", "Public", etc.
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([source, externalId]) // Prevent duplicate events from same source
+}

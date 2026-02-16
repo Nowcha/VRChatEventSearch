@@ -1,0 +1,8 @@
+[dotenv@17.3.1] injecting env (4) from .env -- tip: ⚙️  override existing env vars with { override: true }
+Attempting to log in to X...
+Error scraping X: Error: {"errors":[{"message":"Sorry, that page does not exist","code":34}]}
+    at TwitterUserAuth.updateGuestToken (D:\Project\06_VRChatEventSearch\backend\node_modules\agent-twitter-client\src\auth.ts:262:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async TwitterUserAuth.login (D:\Project\06_VRChatEventSearch\backend\node_modules\agent-twitter-client\src\auth-user.ts:98:5)
+    at async Scraper.login (D:\Project\06_VRChatEventSearch\backend\node_modules\agent-twitter-client\src\scraper.ts:730:5)
+    at async main (D:\Project\06_VRChatEventSearch\backend\src\test-x-scraper.ts:13:9)

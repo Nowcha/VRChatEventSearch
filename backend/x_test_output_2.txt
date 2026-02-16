@@ -1,0 +1,41 @@
+[dotenv@17.3.1] injecting env (6) from .env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Setting cookies for X...
+Cookies set.
+Attempting to search tweets...
+Error scraping X: ApiError: Response status: 401
+    at ApiError.fromResponse (D:\Project\06_VRChatEventSearch\backend\node_modules\agent-twitter-client\src\errors.ts:21:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async requestApi (D:\Project\06_VRChatEventSearch\backend\node_modules\agent-twitter-client\src\api.ts:102:12)
+    at async getSearchTimeline (D:\Project\06_VRChatEventSearch\backend\node_modules\agent-twitter-client\src\search.ts:145:15)
+    at async fetchSearchTweets (D:\Project\06_VRChatEventSearch\backend\node_modules\agent-twitter-client\src\search.ts:53:20)
+    at async main (D:\Project\06_VRChatEventSearch\backend\src\test-x-scraper.ts:36:24) {
+  response: Response {
+    status: 401,
+    statusText: 'Unauthorized',
+    headers: Headers {
+      connection: 'keep-alive',
+      'content-length': '89',
+      perf: '7402827104',
+      'content-type': 'application/json;charset=utf-8',
+      'cache-control': 'no-cache, no-store, max-age=0',
+      'x-transaction-id': '92407eb851d7140d',
+      'content-encoding': 'gzip',
+      server: 'envoy',
+      'accept-ranges': 'bytes',
+      date: 'Mon, 16 Feb 2026 01:04:37 GMT',
+      via: '1.1 varnish',
+      'x-served-by': 't4_p, cache-nrt-rjtf7700055-NRT',
+      'x-cache': 'MISS',
+      'x-cache-hits': '0',
+      'strict-transport-security': 'max-age=300',
+      'x-response-time': '4'
+    },
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: false,
+    redirected: false,
+    type: 'basic',
+    url: 'https://api.twitter.com/graphql/gkjsKepM6gl_HmFWoWKfgg/SearchTimeline?features=%7B%22android_graphql_skip_api_media_color_palette%22%3Afalse%2C%22blue_business_profile_image_shape_enabled%22%3Afalse%2C%22creator_subscriptions_subscription_count_enabled%22%3Afalse%2C%22creator_subscriptions_tweet_preview_api_enabled%22%3Atrue%2C%22freedom_of_speech_not_reach_fetch_enabled%22%3Atrue%2C%22graphql_is_translatable_rweb_tweet_is_translatable_enabled%22%3Atrue%2C%22interactive_text_enabled%22%3Afalse%2C%22longform_notetweets_consumption_enabled%22%3Atrue%2C%22longform_notetweets_inline_media_enabled%22%3Atrue%2C%22longform_notetweets_rich_text_read_enabled%22%3Atrue%2C%22responsive_web_edit_tweet_api_enabled%22%3Atrue%2C%22responsive_web_enhance_cards_enabled%22%3Afalse%2C%22responsive_web_graphql_exclude_directive_enabled%22%3Atrue%2C%22responsive_web_graphql_skip_user_profile_image_extensions_enabled%22%3Afalse%2C%22responsive_web_graphql_timeline_navigation_enabled%22%3Atrue%2C%22responsive_web_media_download_video_enabled%22%3Afalse%2C%22responsive_web_text_conversations_enabled%22%3Afalse%2C%22responsive_web_twitter_article_tweet_consumption_enabled%22%3Afalse%2C%22rweb_lists_timeline_redesign_enabled%22%3Atrue%2C%22standardized_nudges_misinfo%22%3Atrue%2C%22subscriptions_verification_info_enabled%22%3Atrue%2C%22subscriptions_verification_info_reason_enabled%22%3Atrue%2C%22subscriptions_verification_info_verified_since_enabled%22%3Atrue%2C%22super_follow_badge_privacy_enabled%22%3Afalse%2C%22super_follow_exclusive_tweet_notifications_enabled%22%3Afalse%2C%22super_follow_tweet_api_enabled%22%3Afalse%2C%22super_follow_user_api_enabled%22%3Afalse%2C%22tweet_awards_web_tipping_enabled%22%3Afalse%2C%22tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled%22%3Atrue%2C%22tweetypie_unmention_optimization_enabled%22%3Atrue%2C%22unified_cards_ad_metadata_container_dynamic_card_content_query_enabled%22%3Afalse%2C%22verified_phone_label_enabled%22%3Afalse%2C%22vibe_api_enabled%22%3Afalse%2C%22view_counts_everywhere_api_enabled%22%3Atrue%7D&fieldToggles=%7B%22withArticleRichContentState%22%3Afalse%7D&variables=%7B%22count%22%3A20%2C%22product%22%3A%22Top%22%2C%22querySource%22%3A%22typed_query%22%2C%22rawQuery%22%3A%22%23VRChat_event%22%7D'
+  },
+  data: { errors: [ [Object] ] }
+}
