@@ -30,7 +30,8 @@ const DailyEvents: React.FC = () => {
             setCurrentDate(now.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
 
             // Fetch from backend
-            const response = await axios.get('http://localhost:3001/api/events', {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            const response = await axios.get(`${apiUrl}/api/events`, {
                 params: {
                     start: startOfDay.toISOString(),
                     end: endOfDay.toISOString()
