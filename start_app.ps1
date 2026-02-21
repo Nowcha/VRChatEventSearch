@@ -1,9 +1,9 @@
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+﻿[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 # VRChat Event Search - Local Launcher
 # このスクリプトはバックエンドとフロントエンドを起動し、ブラウザを開きます。
 
-$ErrorActionPreference = "Continue" # StopからContinueに変更して即落ちを防ぐ
+$ErrorActionPreference = "Continue"
 
 try {
     Write-Host "=== VRChat Event Search 起動中 ===" -ForegroundColor Cyan
@@ -20,7 +20,7 @@ try {
     }
 
     Set-Location $ScriptDir
-    Write-Host "カレントディレクトリ: $(Get-Location)" -ForegroundColor DarkGray
+    Write-Host "カレントディレクトリ: $($(Get-Location))" -ForegroundColor DarkGray
 
     # 1. バックエンドの起動
     Write-Host "1. バックエンドサーバーを起動しています..." -ForegroundColor Green
@@ -35,7 +35,7 @@ try {
     Start-Sleep -Seconds 5
 
     Write-Host "ブラウザを開きます: http://localhost:3000" -ForegroundColor Cyan
-    Write-Host "※ブラウザ（Edge/Chrome等）を閉じると、サーバーも自動で終了します。" -ForegroundColor Magenta
+    Write-Host "ブラウザ（Edge/Chrome等）を閉じると、サーバーも自動で終了します。" -ForegroundColor Magenta
 
     try {
         Write-Host "Edge ブラウザを新しいウィンドウで起動します..." -ForegroundColor Cyan
