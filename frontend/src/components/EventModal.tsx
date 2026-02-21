@@ -106,15 +106,6 @@ const EventModal: React.FC<EventModalProps> = ({ event, onClose, isFavorite, onT
                             {event.description || 'No description available.'}
                         </div>
                     </div>
-
-                    <a
-                        href={event.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block w-full text-center py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-cyan-500/20"
-                    >
-                        Open Original Event Page ↗
-                    </a>
                 </div>
             </div>
         </div>

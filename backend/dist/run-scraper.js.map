@@ -1,0 +1,1 @@
+{"version":3,"file":"run-scraper.js","sourceRoot":"","sources":["../src/run-scraper.ts"],"names":[],"mappings":";;;;;;;;;;;AACA,gEAAkE;AAElE,SAAe,IAAI;;QACf,IAAI,CAAC;YACD,MAAM,IAAA,sCAAoB,GAAE,CAAC;YAC7B,OAAO,CAAC,GAAG,CAAC,kBAAkB,CAAC,CAAC;QACpC,CAAC;QAAC,OAAO,CAAC,EAAE,CAAC;YACT,OAAO,CAAC,KAAK,CAAC,CAAC,CAAC,CAAC;QACrB,CAAC;IACL,CAAC;CAAA;AAED,IAAI,EAAE,CAAC"}
