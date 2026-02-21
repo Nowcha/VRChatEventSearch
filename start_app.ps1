@@ -7,8 +7,12 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "=== VRChat Event Search 起動中 ===" -ForegroundColor Cyan
 
-# プロジェクトルートディレクトリ (スクリプトの場所)
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# プロジェクトルートディレクトリ (スクリプトの場所を確実に取得)
+$ScriptDir = $PSScriptRoot
+if ([string]::IsNullOrEmpty($ScriptDir)) {
+    $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+}
+Set-Location $ScriptDir
 
 # 1. バックエンドの起動
 Write-Host "1. バックエンドサーバーを起動しています..." -ForegroundColor Green
@@ -26,18 +30,29 @@ Write-Host "ブラウザを開きます: http://localhost:3000" -ForegroundColor
 Write-Host "※ブラウザ（Edge/Chrome等）を閉じると、サーバーも自動で終了します。" -ForegroundColor Magenta
 
 # ブラウザプロセスを起動し、終了を待機する
-# 注意: 既存のブラウザプロセスにタブとして追加される場合、すぐ抜けてしまうため、新しいウィンドウとして起動するか、
-# コマンドプロンプト側の終了待機機能を使います。
+# 注意: 既存のブラウザプロセス(Edge等)が既に起動している場合、-Wait を付けても
+# プロセスが既存のウィンドウに統合されてすぐに制御が戻ってしまう問題があります。
+# そのため、PowerShellウィンドウを開いたまま待機させるための手動終了プロンプトを用意します。
+
 try {
-    # Edgeを明示的に新しいウィンドウで起動し、待機するよう試みる
-    Start-Process "msedge.exe" -ArgumentList "--new-window http://localhost:3000" -Wait
+    Write-Host "Edge ブラウザを新しいウィンドウで起動します..." -ForegroundColor Cyan
+    Start-Process "msedge.exe" -ArgumentList "--new-window http://localhost:3000"
 }
 catch {
-    # Edgeがないなどエラー発生時は標準の関連付けで開く（待機できない可能性あり）
+    Write-Host "Edgeが見つかりません。デフォルトブラウザで開きます..." -ForegroundColor Yellow
     Start-Process "http://localhost:3000"
-    Write-Host "ブラウザの待機プロセスを開始できませんでした。手動でウィンドウを閉じてください。" -ForegroundColor Red
-    pause
 }
+
+Write-Host ""
+Write-Host "======================================================" -ForegroundColor Magenta
+Write-Host "  サーバー稼働中: http://localhost:3000" -ForegroundColor Magenta
+Write-Host "  終了するには、このウィンドウで何かキーを押すか、" -ForegroundColor Magenta
+Write-Host "  ウィンドウ右上の [X] ボタンで閉じてください。" -ForegroundColor Magenta
+Write-Host "======================================================" -ForegroundColor Magenta
+Write-Host ""
+
+# ここでスクリプトの実行を一時停止させ、ユーザーの入力を待つ（これでウィンドウが勝手に閉じない）
+$Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
 
 # 4. クリーンアップ処理
 Write-Host "ブラウザが閉じられました。サーバープロセスを終了しています..." -ForegroundColor Yellow
