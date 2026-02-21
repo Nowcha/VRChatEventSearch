@@ -34,28 +34,34 @@ try {
     Write-Host "3. サーバーの起動を待機しています (5秒)..." -ForegroundColor Yellow
     Start-Sleep -Seconds 5
 
-    Write-Host "ブラウザを開きます: http://localhost:3000" -ForegroundColor Cyan
-    Write-Host "ブラウザ（Edge/Chrome等）を閉じると、サーバーも自動で終了します。" -ForegroundColor Magenta
+    Write-Host "専用のブラウザウィンドウを開きます..." -ForegroundColor Cyan
+    Write-Host "このブラウザ画面を閉じると、裏で動いているサーバーも自動で終了します。" -ForegroundColor Magenta
 
+    # 専用のプロファイルディレクトリを作成して、完全に独立したプロセスとしてブラウザを起動する
+    # これにより既存のブラウザが開いていても「終了待機 (-Wait)」が確実に動作します。
+    $TempProfile = Join-Path $env:TEMP "VRCEve_Profile"
+    
     try {
-        Write-Host "Edge ブラウザを新しいウィンドウで起動します..." -ForegroundColor Cyan
-        Start-Process "msedge.exe" -ArgumentList "--new-window http://localhost:3000"
+        # Edgeをアプリモードで起動 (独立プロセス)
+        Start-Process "msedge.exe" -ArgumentList "--app=http://localhost:3000", "--user-data-dir=`"$TempProfile`"" -Wait
     }
     catch {
-        Write-Host "Edgeが見つかりません。デフォルトブラウザで開きます..." -ForegroundColor Yellow
-        Start-Process "http://localhost:3000"
+        Write-Host "Edgeでの起動に失敗しました。Chromeで試行します..." -ForegroundColor Yellow
+        try {
+            Start-Process "chrome.exe" -ArgumentList "--app=http://localhost:3000", "--user-data-dir=`"$TempProfile`"" -Wait
+        }
+        catch {
+            Write-Host "Chromeも見つかりません。通常のブラウザで開きます（この場合自動終了は効きません）" -ForegroundColor Red
+            Start-Process "http://localhost:3000"
+            Write-Host "終了するにはキーを押してください..." -ForegroundColor Magenta
+            $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
+        }
     }
 
-    Write-Host ""
-    Write-Host "======================================================" -ForegroundColor Magenta
-    Write-Host "  サーバー稼働中: http://localhost:3000" -ForegroundColor Magenta
-    Write-Host "  終了するには、このウィンドウで何かキーを押すか、" -ForegroundColor Magenta
-    Write-Host "  ウィンドウ右上の [X] ボタンで閉じてください。" -ForegroundColor Magenta
-    Write-Host "======================================================" -ForegroundColor Magenta
-    Write-Host ""
-
-    # ここでスクリプトの実行を一時停止させ、ユーザーの入力を待つ（これでウィンドウが勝手に閉じない）
-    $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
+    # 一時プロファイルフォルダのお掃除
+    if (Test-Path $TempProfile) {
+        Remove-Item -Path $TempProfile -Recurse -Force -ErrorAction SilentlyContinue
+    }
 
     # 4. クリーンアップ処理
     Write-Host "ブラウザが閉じられました。サーバープロセスを終了しています..." -ForegroundColor Yellow
@@ -84,6 +90,6 @@ catch {
     
     # 窓が勝手に閉じないように無限ループで待機
     while ($true) {
-        pause
+        Start-Sleep -Seconds 1
     }
 }
