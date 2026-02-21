@@ -34,27 +34,46 @@ try {
     Write-Host "3. サーバーの起動を待機しています (5秒)..." -ForegroundColor Yellow
     Start-Sleep -Seconds 5
 
-    Write-Host "専用のブラウザウィンドウを開きます..." -ForegroundColor Cyan
-    Write-Host "このブラウザ画面を閉じると、裏で動いているサーバーも自動で終了します。" -ForegroundColor Magenta
+    Write-Host "専用のChromeブラウザウィンドウ(アプリモード)を開きます..." -ForegroundColor Cyan
+    Write-Host "この画面の「」ボタンを押して閉じると、裏で動いているサーバーも自動で終了します。" -ForegroundColor Magenta
 
-    # 専用のプロファイルディレクトリを作成して、完全に独立したプロセスとしてブラウザを起動する
-    # これにより既存のブラウザが開いていても「終了待機 (-Wait)」が確実に動作します。
-    $TempProfile = Join-Path $env:TEMP "VRCEve_Profile"
+    # Chromeをアプリモードで起動（以前Chromeで開いていた設定に戻します）
+    # Start-Process -Wait はブラウザの仕様で抜けやすいため、Windowタイトルで死活監視します。
+    # Viteなどで表示されるページタイトルは "Vite + React + TS" 等になっている可能性があるため、URL等で判断します。
+    
+    $TempProfile = Join-Path $env:TEMP "VRCEve_ChromeProfile"
+    
+    # プロファイルを毎度クリーンにする（前回のクラッシュ復元などを防ぐため）
+    if (Test-Path $TempProfile) {
+        Remove-Item -Path $TempProfile -Recurse -Force -ErrorAction SilentlyContinue
+    }
     
     try {
-        # Edgeをアプリモードで起動 (独立プロセス)
-        Start-Process "msedge.exe" -ArgumentList "--app=http://localhost:3000", "--user-data-dir=`"$TempProfile`"" -Wait
+        Start-Process "chrome.exe" -ArgumentList "--app=http://localhost:3000", "--user-data-dir=`"$TempProfile`"", "--disable-restore-session-state"
     }
     catch {
-        Write-Host "Edgeでの起動に失敗しました。Chromeで試行します..." -ForegroundColor Yellow
-        try {
-            Start-Process "chrome.exe" -ArgumentList "--app=http://localhost:3000", "--user-data-dir=`"$TempProfile`"" -Wait
-        }
-        catch {
-            Write-Host "Chromeも見つかりません。通常のブラウザで開きます（この場合自動終了は効きません）" -ForegroundColor Red
-            Start-Process "http://localhost:3000"
-            Write-Host "終了するにはキーを押してください..." -ForegroundColor Magenta
-            $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
+        Write-Host "Chromeが見つかりません。通常のブラウザで開きます..." -ForegroundColor Yellow
+        Start-Process "http://localhost:3000"
+    }
+
+    # ======== 終了監視ループ ========
+    # chrome.exe のうち、今回作成したプロファイルフォルダのパスをコマンドライン引数に持つプロセスを探す
+    Write-Host "ブラウザの終了を監視中..." -ForegroundColor DarkGray
+    
+    Start-Sleep -Seconds 3 # 起動猶予
+    
+    $WaitLoop = $true
+    while ($WaitLoop) {
+        Start-Sleep -Seconds 2
+        
+        # Get-CimInstance を使って、コマンドライン引数に独自プロファイルのパスを含んでいるプロセスを検索
+        # Get-Processだと引数が取得できないためWMI(CIM)を使用
+        $chromeProcesses = Get-CimInstance Win32_Process -Filter "Name = 'chrome.exe'" | Where-Object { $_.CommandLine -match "VRCEve_ChromeProfile" }
+        
+        # もし対象のプロセスが1つも見つからなくなったら（＝全て閉じられたら）、ループを抜ける
+        if (!$chromeProcesses) {
+            Write-Host "専用プロファイルのChromeプロセスが消失しました。" -ForegroundColor Yellow
+            $WaitLoop = $false
         }
     }
 
